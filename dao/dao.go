@@ -16,8 +16,8 @@ type IDao interface {
 	Delete(data interface{}, mapParams *map[string]interface{}) error
 
 	// Count: method for count data
-	Count(filters []query.Filter, joins []query.Join, limit rfdatalimit.Limit, mapParams *map[string]interface{}) (uint64, error)
+	Count(filters []query.Filter, joins []query.Join, limit query.Limit, mapParams *map[string]interface{}) (uint64, error)
 
 	// List: method for get list of data
-	List(fields []rfdatafield.Field, filters []query.Filter, joins []query.Join, limit query.Limit, mapParams *map[string]interface{}) ([]interface{}, error)
+	List(fields []query.Field, filters []query.Filter, joins []query.Join, limit query.Limit, mapParams *map[string]interface{}) ([]interface{}, error)
 }

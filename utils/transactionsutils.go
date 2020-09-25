@@ -1,4 +1,4 @@
-package rfdatatransactionsutils
+package utils
 
 import (
 	"errors"
