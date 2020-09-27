@@ -12,12 +12,33 @@ type IDao interface {
 	// Add : method for save data
 	Add(data interface{}, mapParams *map[string]interface{}) (interface{}, error)
 
-	// Delete: method for delete data
+	// Delete : method for delete data
 	Delete(data interface{}, mapParams *map[string]interface{}) error
 
-	// Count: method for count data
-	Count(filters []query.Filter, joins []query.Join, limit query.Limit, mapParams *map[string]interface{}) (uint64, error)
+	// Count : method for count data
+	Count(filters []query.Filter, joins []query.Join, groups query.Group, mapParams *map[string]interface{}) (int64, error)
 
-	// List: method for get list of data
-	List(fields []query.Field, filters []query.Filter, joins []query.Join, limit query.Limit, mapParams *map[string]interface{}) ([]interface{}, error)
+	// List : method for get list of data
+	List(fields []query.Field, filters []query.Filter, joins []query.Join, orders []query.Order, groups query.Group, limit query.Limit, mapParams *map[string]interface{}) ([]interface{}, error)
+
+	//  InstaceEmptyModel : necesary for example gorm to instance model database
+	InstaceEmptyModel() interface{}
+
+	// InstaceEmptyArrayModel: necesary for example gorm to instance model array database
+	InstaceEmptyArrayModel() []interface{}
+}
+
+// BaseDao is  base struct for daos
+type BaseDao struct {
+	TableName string
+}
+
+// InstaceEmptyModel : necesary for example gorm to instance model database
+func (baseDao *BaseDao) InstaceEmptyModel() interface{} {
+
+}
+
+// InstaceEmptyArrayModel : necesary for example gorm to instance model array database
+func (baseDao *BaseDao) InstaceEmptyArrayModel() []interface{} {
+
 }

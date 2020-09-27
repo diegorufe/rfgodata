@@ -1,9 +1,17 @@
 package transactions
 
+import "rfgodata/beans/query"
+
 // ITransaction : interface define methods for transactions
 type ITransaction interface {
 	// Edit : method for edit data
 	Edit(data interface{}) (interface{}, error)
+
+	// Count : method for count data
+	Count(tableName string, filters []query.Filter, joins []query.Join, groups query.Group) (int64, error)
+
+	// List : method for get list of data
+	List(modelArray []interface{}, fields []query.Field, filters []query.Filter, joins []query.Join, orders []query.Order, groups query.Group, limit query.Limit) ([]interface{}, error)
 
 	// RollBack : Method for execute rollback
 	RollBack()
