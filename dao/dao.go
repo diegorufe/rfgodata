@@ -16,10 +16,10 @@ type IDao interface {
 	Delete(data interface{}, mapParams *map[string]interface{}) error
 
 	// Count : method for count data
-	Count(filters []query.Filter, joins []query.Join, groups query.Group, mapParams *map[string]interface{}) (int64, error)
+	Count(filters []query.Filter, joins []query.Join, groups []query.Group, mapParams *map[string]interface{}) (int64, error)
 
 	// List : method for get list of data
-	List(fields []query.Field, filters []query.Filter, joins []query.Join, orders []query.Order, groups query.Group, limit query.Limit, mapParams *map[string]interface{}) ([]interface{}, error)
+	List(fields []query.Field, filters []query.Filter, joins []query.Join, orders []query.Order, groups []query.Group, limit query.Limit, mapParams *map[string]interface{}) ([]interface{}, error)
 
 	//  InstaceEmptyModel : necesary for example gorm to instance model database
 	InstaceEmptyModel() interface{}
