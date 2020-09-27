@@ -1,4 +1,4 @@
-package rfdatadaogorm
+package daogorm
 
 import (
 	"rfgodata/utils"
