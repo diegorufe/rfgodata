@@ -20,25 +20,9 @@ type IDao interface {
 
 	// List : method for get list of data
 	List(fields []query.Field, filters []query.Filter, joins []query.Join, orders []query.Order, groups []query.Group, limit query.Limit, mapParams *map[string]interface{}) ([]interface{}, error)
-
-	//  InstaceEmptyModel : necesary for example gorm to instance model database
-	InstaceEmptyModel() interface{}
-
-	// InstaceEmptyArrayModel: necesary for example gorm to instance model array database
-	InstaceEmptyArrayModel() []interface{}
 }
 
 // BaseDao is  base struct for daos
 type BaseDao struct {
 	TableName string
-}
-
-// InstaceEmptyModel : necesary for example gorm to instance model database
-func (baseDao *BaseDao) InstaceEmptyModel() interface{} {
-	return nil
-}
-
-// InstaceEmptyArrayModel : necesary for example gorm to instance model array database
-func (baseDao *BaseDao) InstaceEmptyArrayModel() []interface{} {
-	return nil
 }

@@ -40,12 +40,12 @@ func (transactionGorm *TransactionGorm) Count(tableName string, filters []query.
 }
 
 // List : method for get list of data
-func (transactionGorm *TransactionGorm) List(modelArray []interface{}, fields []query.Field, filters []query.Filter, joins []query.Join, orders []query.Order, groups query.Group, limit query.Limit) ([]interface{}, error) {
-	var returnData []interface{} = nil
+func (transactionGorm *TransactionGorm) List(fields []query.Field, filters []query.Filter, joins []query.Join, orders []query.Order, groups query.Group, limit query.Limit) ([]interface{}, error) {
+	var returnData []interface{}
 	var returnError error = nil
 
 	//  TODO apply wheres, order, limit ...
-	transactionGorm.Transaction.Find(&modelArray)
+	transactionGorm.Transaction.Find(&returnData)
 
 	return returnData, returnError
 }
