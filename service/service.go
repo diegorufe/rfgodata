@@ -17,7 +17,7 @@ type IService interface {
 
 // BaseService is  base struct for services
 type BaseService struct {
-	dao dao.IDao
+	Dao dao.IDao
 }
 
 // Count : method for count data

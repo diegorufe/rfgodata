@@ -35,10 +35,10 @@ type BaseDao struct {
 
 // InstaceEmptyModel : necesary for example gorm to instance model database
 func (baseDao *BaseDao) InstaceEmptyModel() interface{} {
-
+	return nil
 }
 
 // InstaceEmptyArrayModel : necesary for example gorm to instance model array database
 func (baseDao *BaseDao) InstaceEmptyArrayModel() []interface{} {
-
+	return nil
 }

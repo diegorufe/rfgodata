@@ -12,7 +12,12 @@ import (
 
 // DaoGorm : dao for gorm
 type DaoGorm struct {
-	*dao.BaseDao
+	dao.BaseDao
+}
+
+// Add : method for save data
+func (daoGorm *DaoGorm) Add(data interface{}, mapParams *map[string]interface{}) (interface{}, error) {
+	return nil, nil
 }
 
 // Edit : method for edit data in database
@@ -34,6 +39,11 @@ func (daoGorm *DaoGorm) Edit(data interface{}, mapParams *map[string]interface{}
 	}
 
 	return returnData, returnError
+}
+
+// Delete : method for delete data
+func (daoGorm *DaoGorm) Delete(data interface{}, mapParams *map[string]interface{}) error {
+	return nil
 }
 
 // Count : method for count data

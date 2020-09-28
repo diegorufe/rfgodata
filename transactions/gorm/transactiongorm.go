@@ -10,7 +10,7 @@ import (
 
 // TransactionGorm transaction type gorm
 type TransactionGorm struct {
-	*transactions.BaseTransaction
+	transactions.BaseTransaction
 	Transaction *gorm.DB
 }
 
