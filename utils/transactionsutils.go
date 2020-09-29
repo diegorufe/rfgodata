@@ -11,13 +11,13 @@ import (
 func GetTransactionInParams(mapParams *map[string]interface{}) (transactions.ITransaction, error) {
 	var returnTransaction transactions.ITransaction = nil
 	var returnError error = nil
-	var paramExists bool = false
+	var paramExists bool = true
 
 	if mapParams != nil {
-		returnTransaction, paramExists = (*mapParams)[constants.ParamTransaction].(transactions.ITransaction)
+		returnTransaction = (*mapParams)[constants.ParamTransaction].(transactions.ITransaction)
 
 		// If not exist in mapparams return nil and return code error
-		if !paramExists {
+		if returnTransaction == nil || !paramExists {
 			returnTransaction = nil
 			returnError = errors.New(utilsstring.IntToString(int(constants.ErrorTransactionNotFound)))
 		}

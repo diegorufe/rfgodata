@@ -14,22 +14,8 @@ type TransactionGorm struct {
 	Transaction *gorm.DB
 }
 
-// Edit : method for edit data in database
-func (transactionGorm *TransactionGorm) Edit(data interface{}) (interface{}, error) {
-	var returnError error = nil
-	transactionGorm.Transaction.Save(&data)
-	if transactionGorm.Transaction.Error != nil {
-		returnError = transactionGorm.Transaction.Error
-	}
-
-	// Finish transaction
-	transactionGorm.FinishTransaction(returnError)
-
-	return data, returnError
-}
-
 // Count : method for count data
-func (transactionGorm *TransactionGorm) Count(tableName string, filters []query.Filter, joins []query.Join, groups query.Group) (int64, error) {
+func (transactionGorm TransactionGorm) Count(tableName string, filters []query.Filter, joins []query.Join, groups []query.Group) (int64, error) {
 	var returnCount int64 = 0
 	var returnError error = nil
 
@@ -40,7 +26,7 @@ func (transactionGorm *TransactionGorm) Count(tableName string, filters []query.
 }
 
 // List : method for get list of data
-func (transactionGorm *TransactionGorm) List(fields []query.Field, filters []query.Filter, joins []query.Join, orders []query.Order, groups query.Group, limit query.Limit) ([]interface{}, error) {
+func (transactionGorm TransactionGorm) List(fields []query.Field, filters []query.Filter, joins []query.Join, orders []query.Order, groups []query.Group, limit query.Limit) ([]interface{}, error) {
 	var returnData []interface{}
 	var returnError error = nil
 
@@ -51,6 +37,6 @@ func (transactionGorm *TransactionGorm) List(fields []query.Field, filters []que
 }
 
 // RollBack : Method for execute rollback
-func (transactionGorm *TransactionGorm) RollBack() {
+func (transactionGorm TransactionGorm) RollBack() {
 	transactionGorm.Transaction.Rollback()
 }
