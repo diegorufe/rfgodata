@@ -6,6 +6,8 @@ import (
 	"gorm.io/gorm"
 
 	"rfgodata/beans/query"
+
+	"rfgodata/models"
 )
 
 // TransactionGorm transaction type gorm
@@ -26,8 +28,8 @@ func (transactionGorm TransactionGorm) Count(tableName string, filters []query.F
 }
 
 // List : method for get list of data
-func (transactionGorm TransactionGorm) List(fields []query.Field, filters []query.Filter, joins []query.Join, orders []query.Order, groups []query.Group, limit query.Limit) ([]interface{}, error) {
-	var returnData []interface{}
+func (transactionGorm TransactionGorm) List(instaceArrayMode []models.IModel, fields []query.Field, filters []query.Filter, joins []query.Join, orders []query.Order, groups []query.Group, limit query.Limit) ([]models.IModel, error) {
+	var returnData []models.IModel = instaceArrayMode
 	var returnError error = nil
 
 	//  TODO apply wheres, order, limit ...
