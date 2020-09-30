@@ -4,7 +4,7 @@ import "time"
 
 // BaseModelGorm for all model
 type BaseModelGorm struct {
-	ID        uint      `gorm:"primaryKey"`
-	CreatedAt time.Time `gorm:"column:createdAt"`
-	UpdatedAt time.Time `gorm:"column:updatedAt"`
+	ID        uint      `gorm:"column:primaryKey" json:"id"`
+	CreatedAt time.Time `gorm:"column:createdAt" json:"createdAt"`
+	UpdatedAt time.Time `gorm:"column:updatedAt" json:"updatedAt"`
 }

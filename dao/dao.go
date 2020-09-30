@@ -4,6 +4,8 @@ import (
 	"rfgodata/beans/query"
 )
 
+type InstanceModelArrayFunc func(dbContext interface{}) (interface{}, error)
+
 // IDao : Interface define dao data operations
 type IDao interface {
 	// Edit : method for edit data
@@ -19,10 +21,11 @@ type IDao interface {
 	Count(filters []query.Filter, joins []query.Join, groups []query.Group, mapParams *map[string]interface{}) (int64, error)
 
 	// List : method for get list of data
-	List(fields []query.Field, filters []query.Filter, joins []query.Join, orders []query.Order, groups []query.Group, limit query.Limit, mapParams *map[string]interface{}) ([]interface{}, error)
+	List(fields []query.Field, filters []query.Filter, joins []query.Join, orders []query.Order, groups []query.Group, limit query.Limit, mapParams *map[string]interface{}) (interface{}, error)
 }
 
 // BaseDao is  base struct for daos
 type BaseDao struct {
-	TableName string
+	TableName              string
+	InstanceFindModelArray InstanceModelArrayFunc
 }

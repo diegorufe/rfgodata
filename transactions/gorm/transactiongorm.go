@@ -6,8 +6,6 @@ import (
 	"gorm.io/gorm"
 
 	"rfgodata/beans/query"
-
-	"rfgodata/models"
 )
 
 // TransactionGorm transaction type gorm
@@ -28,14 +26,8 @@ func (transactionGorm TransactionGorm) Count(tableName string, filters []query.F
 }
 
 // List : method for get list of data
-func (transactionGorm TransactionGorm) List(instaceArrayMode []models.IModel, fields []query.Field, filters []query.Filter, joins []query.Join, orders []query.Order, groups []query.Group, limit query.Limit) ([]models.IModel, error) {
-	var returnData []models.IModel = instaceArrayMode
-	var returnError error = nil
-
-	//  TODO apply wheres, order, limit ...
-	transactionGorm.Transaction.Find(&returnData)
-
-	return returnData, returnError
+func (transactionGorm TransactionGorm) List(tableName string, instaceModel func(dbContext interface{}) (interface{}, error), fields []query.Field, filters []query.Filter, joins []query.Join, orders []query.Order, groups []query.Group, limit query.Limit) (interface{}, error) {
+	return instaceModel(transactionGorm.Transaction.Table(tableName))
 }
 
 // RollBack : Method for execute rollback
