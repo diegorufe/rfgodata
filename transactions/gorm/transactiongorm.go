@@ -17,20 +17,27 @@ type TransactionGorm struct {
 // Count : method for count data
 func (transactionGorm TransactionGorm) Count(tableName string, filters []query.Filter, joins []query.Join, groups []query.Group) (int64, error) {
 	var returnCount int64 = 0
-	var returnError error = nil
 
 	//  TODO apply wheres, joins ...
-	transactionGorm.Transaction.Table(tableName).Count(&returnCount)
+	res := transactionGorm.Transaction.Table(tableName).Count(&returnCount)
 
-	return returnCount, returnError
+	return returnCount, res.Error
 }
 
 // List : method for get list of data
-func (transactionGorm TransactionGorm) List(tableName string, instaceModel func(dbContext interface{}) (interface{}, error), fields []query.Field, filters []query.Filter, joins []query.Join, orders []query.Order, groups []query.Group, limit query.Limit) (interface{}, error) {
-	return instaceModel(transactionGorm.Transaction.Table(tableName))
+func (transactionGorm TransactionGorm) List(tableName string, instaceModel func(func(containerData interface{}) (interface{}, error)) (interface{}, error), fields []query.Field, filters []query.Filter, joins []query.Join, orders []query.Order, groups []query.Group, limit query.Limit) (interface{}, error) {
+	return instaceModel(func(containerData interface{}) (interface{}, error) {
+		res := transactionGorm.Transaction.Table(tableName).Find(containerData)
+		return containerData, res.Error
+	})
 }
 
 // RollBack : Method for execute rollback
-func (transactionGorm TransactionGorm) RollBack() {
-	transactionGorm.Transaction.Rollback()
+func (transactionGorm TransactionGorm) RollBack() error {
+	return transactionGorm.Transaction.Rollback().Error
+}
+
+// Commit : Method for execute Commit
+func (transactionGorm TransactionGorm) Commit() error {
+	return transactionGorm.Transaction.Commit().Error
 }

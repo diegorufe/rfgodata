@@ -15,13 +15,16 @@ type ITransaction interface {
 	Count(tableName string, filters []query.Filter, joins []query.Join, groups []query.Group) (int64, error)
 
 	// List : method for get list of data
-	List(tableName string, instaceModel func(dbContext interface{}) (interface{}, error), fields []query.Field, filters []query.Filter, joins []query.Join, orders []query.Order, groups []query.Group, limit query.Limit) (interface{}, error)
+	List(tableName string, instaceModel func(func(containerData interface{}) (interface{}, error)) (interface{}, error), fields []query.Field, filters []query.Filter, joins []query.Join, orders []query.Order, groups []query.Group, limit query.Limit) (interface{}, error)
 
 	// RollBack : Method for execute rollback
-	RollBack()
+	RollBack() error
+
+	// Commit : Method for commit
+	Commit() error
 
 	// FinishTransaction: Method for finish transaction
-	FinishTransaction(err error)
+	FinishTransaction(err error) error
 }
 
 // BaseTransaction : base struct for all transactions
@@ -29,8 +32,13 @@ type BaseTransaction struct {
 }
 
 // RollBack : Method for execute RollBack
-func (baseTransaction BaseTransaction) RollBack() {
+func (baseTransaction BaseTransaction) RollBack() error {
+	return nil
+}
 
+// Commit : Method for execute Commit
+func (baseTransaction BaseTransaction) Commit() error {
+	return nil
 }
 
 // Add : method for add data
@@ -43,21 +51,14 @@ func (baseTransaction BaseTransaction) Edit(data interface{}) (interface{}, erro
 	return nil, nil
 }
 
-// Count : method for count data
-func (baseTransaction BaseTransaction) Count(tableName string, filters []query.Filter, joins []query.Join, groups query.Group) (int64, error) {
-	return 0, nil
-}
-
-// List : method for get list of data
-func (baseTransaction BaseTransaction) List(tableName string, instaceModel func(dbContext interface{}) (interface{}, error), fields []query.Field, filters []query.Filter, joins []query.Join, orders []query.Order, groups query.Group, limit query.Limit) ([]interface{}, error) {
-	return nil, nil
-}
-
 // FinishTransaction : Method for finish transaction
-func (baseTransaction BaseTransaction) FinishTransaction(err error) {
+func (baseTransaction BaseTransaction) FinishTransaction(err error) error {
+	var errReturn error
 	if err != nil {
-		baseTransaction.RollBack()
+		errReturn = baseTransaction.RollBack()
 	} else {
 		// TODO COMMIT if needed
+		errReturn = baseTransaction.Commit()
 	}
+	return errReturn
 }

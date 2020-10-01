@@ -4,7 +4,11 @@ import (
 	"rfgodata/beans/query"
 )
 
-type InstanceModelArrayFunc func(dbContext interface{}) (interface{}, error)
+// InstanceModelArrayFunc For genereate instace array model
+type InstanceModelArrayFunc func(executeFunction func(containerData interface{}) (interface{}, error)) (interface{}, error)
+
+// InstanceModelFunc For genereate instace model
+type InstanceModelFunc func(executeFunction func(containerData interface{}) (interface{}, error)) (interface{}, error)
 
 // IDao : Interface define dao data operations
 type IDao interface {
@@ -28,4 +32,5 @@ type IDao interface {
 type BaseDao struct {
 	TableName              string
 	InstanceFindModelArray InstanceModelArrayFunc
+	InstanceFindModel      InstanceModelFunc
 }
