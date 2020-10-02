@@ -27,7 +27,7 @@ func (transactionGorm TransactionGorm) Count(tableName string, filters []query.F
 // List : method for get list of data
 func (transactionGorm TransactionGorm) List(tableName string, instaceModel func(func(containerData interface{}) (interface{}, error)) (interface{}, error), fields []query.Field, filters []query.Filter, joins []query.Join, orders []query.Order, groups []query.Group, limit query.Limit) (interface{}, error) {
 	return instaceModel(func(containerData interface{}) (interface{}, error) {
-		res := transactionGorm.Transaction.Table(tableName).Find(containerData)
+		res := transactionGorm.Transaction.Table(tableName).Offset(limit.Start).Limit(limit.End).Find(containerData)
 		return containerData, res.Error
 	})
 }
@@ -40,4 +40,16 @@ func (transactionGorm TransactionGorm) RollBack() error {
 // Commit : Method for execute Commit
 func (transactionGorm TransactionGorm) Commit() error {
 	return transactionGorm.Transaction.Commit().Error
+}
+
+// FinishTransaction : Method for finish transaction
+func (transactionGorm TransactionGorm) FinishTransaction(err error) error {
+	var errReturn error
+	if err != nil {
+		errReturn = transactionGorm.RollBack()
+	} else {
+		// TODO COMMIT if needed
+		errReturn = transactionGorm.Commit()
+	}
+	return errReturn
 }
