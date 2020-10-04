@@ -103,7 +103,8 @@ func (transactionGorm TransactionGorm) applyWhere(db *gorm.DB, filters []query.F
 // List : method for get list of data
 func (transactionGorm TransactionGorm) List(tableName string, instaceModel func(func(containerData interface{}) (interface{}, error)) (interface{}, error), fields []query.Field, filters []query.Filter, joins []query.Join, orders []query.Order, groups []query.Group, limit query.Limit) (interface{}, error) {
 	return instaceModel(func(containerData interface{}) (interface{}, error) {
-		res := transactionGorm.Transaction.Table(tableName).Offset(limit.Start).Limit(limit.End).Find(containerData)
+		db := transactionGorm.applyWhere(transactionGorm.Transaction.Table(tableName), filters)
+		res := db.Offset(limit.Start).Limit(limit.End).Find(containerData)
 		return containerData, res.Error
 	})
 }
