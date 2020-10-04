@@ -6,6 +6,10 @@ import (
 	"gorm.io/gorm"
 
 	"rfgodata/beans/query"
+
+	"rfgocore/utils/utilsstring"
+
+	queryconstants "rfgodata/constants/query"
 )
 
 // TransactionGorm transaction type gorm
@@ -22,6 +26,78 @@ func (transactionGorm TransactionGorm) Count(tableName string, filters []query.F
 	res := transactionGorm.Transaction.Table(tableName).Count(&returnCount)
 
 	return returnCount, res.Error
+}
+
+func (transactionGorm TransactionGorm) applyWhereQueryBuilder(filters []query.Filter, firstLevel bool, valuesQuery *[]interface{}) (string, []interface{}) {
+	var queryBuilder string = ""
+
+	if filters != nil && len(filters) > 0 {
+		for index, filter := range filters {
+			queryBuilder = queryBuilder + " "
+			if !(firstLevel && index == 0) {
+				// And / or operation type
+				switch filter.FilterOperationType {
+
+				case queryconstants.And:
+					queryBuilder = queryBuilder + " AND "
+					break
+
+				case queryconstants.Or:
+					queryBuilder = queryBuilder + " OR "
+					break
+				}
+
+			}
+
+			// open brackets
+			if filter.OpenBrackets > 0 {
+				for i := 0; i < filter.OpenBrackets; i++ {
+					queryBuilder = queryBuilder + " ( "
+				}
+			}
+
+			// Alias
+			if utilsstring.IsNotEmpty(filter.Alias) {
+				queryBuilder = queryBuilder + " " + filter.Alias + "."
+			}
+
+			// Field
+			if utilsstring.IsNotEmpty(filter.Field) {
+				queryBuilder = queryBuilder + filter.Field
+			}
+
+			// Filter type operation
+			switch filter.FilterType {
+			case queryconstants.Equal:
+				queryBuilder = queryBuilder + " = ? "
+				*valuesQuery = append(*valuesQuery, filter.Value)
+			}
+
+			// close brackets
+			if filter.CloseBrackets > 0 {
+				for i := 0; i < filter.CloseBrackets; i++ {
+					queryBuilder = queryBuilder + " ) "
+				}
+			}
+		}
+
+	}
+
+	return queryBuilder, *valuesQuery
+}
+
+func (transactionGorm TransactionGorm) applyWhere(db *gorm.DB, filters []query.Filter) *gorm.DB {
+	var dbReturn *gorm.DB
+	var queryBuilder string = ""
+	var valuesQuery []interface{}
+
+	queryBuilder, valuesQuery = transactionGorm.applyWhereQueryBuilder(filters, true, &valuesQuery)
+
+	// If have query call where
+	if utilsstring.IsNotEmpty(queryBuilder) {
+		dbReturn = db.Where(queryBuilder, valuesQuery)
+	}
+	return dbReturn
 }
 
 // List : method for get list of data
