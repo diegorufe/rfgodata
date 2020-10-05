@@ -17,7 +17,22 @@ type DaoGorm struct {
 
 // Add : method for save data
 func (daoGorm *DaoGorm) Add(data interface{}, mapParams *map[string]interface{}) (interface{}, error) {
-	return nil, nil
+	var returnData interface{} = nil
+	var returnError error = nil
+
+	if data != nil {
+		// find transaction
+		transaction, returnError := utils.GetTransactionInParams(mapParams)
+
+		if returnError != nil {
+			returnData, returnError = (transaction).Add(data)
+		}
+
+	} else {
+		returnError = gorm.ErrInvalidData
+	}
+
+	return returnData, returnError
 }
 
 // Edit : method for edit data in database

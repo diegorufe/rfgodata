@@ -8,7 +8,7 @@ import (
 type Filter struct {
 	FilterType          query.FilterType          `json:"filterType"`
 	FilterOperationType query.FilterOperationType `json:"filterOperationType"`
-	Field               string                    `json:"filed"`
+	Field               string                    `json:"field"`
 	Alias               string                    `json:"alias"`
 	Value               interface{}               `json:"value"`
 	CollecionFilters    []Filter                  `json:"collecionFilters"`
