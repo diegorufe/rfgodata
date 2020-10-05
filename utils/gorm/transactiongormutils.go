@@ -178,6 +178,8 @@ func ApplyJoins(db *gorm.DB, joins []query.Join) *gorm.DB {
 
 				}
 			}
+			// Apply joins condiction
+			dbReturn = dbReturn.Joins(queryBuilder)
 		}
 	}
 	return dbReturn
