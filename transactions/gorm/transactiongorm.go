@@ -29,6 +29,7 @@ func (transactionGorm TransactionGorm) Count(tableName string, filters []query.F
 func (transactionGorm TransactionGorm) List(tableName string, instaceModel func(func(containerData interface{}) (interface{}, error)) (interface{}, error), fields []query.Field, filters []query.Filter, joins []query.Join, orders []query.Order, groups []query.Group, limit query.Limit) (interface{}, error) {
 	return instaceModel(func(containerData interface{}) (interface{}, error) {
 		db := trxGormUtils.ApplyWhere(transactionGorm.Transaction.Table(tableName), filters)
+		db = trxGormUtils.ApplyJoins(db, joins)
 		db = trxGormUtils.ApplyLimit(db, limit)
 		res := db.Find(containerData)
 		return containerData, res.Error
