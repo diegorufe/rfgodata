@@ -8,3 +8,8 @@ type BaseModelGorm struct {
 	CreatedAt time.Time `gorm:"column:createdAt" json:"createdAt"`
 	UpdatedAt time.Time `gorm:"column:updatedAt" json:"updatedAt"`
 }
+
+// Tabler Interface indicates table name for table
+type Tabler interface {
+	TableName() string
+}

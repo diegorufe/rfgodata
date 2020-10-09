@@ -8,6 +8,9 @@ import (
 	"gorm.io/gorm"
 )
 
+// DefaultAliasQuery indicates default alias for use in querys if not pass alias
+const DefaultAliasQuery string = "defaultAliasQuery"
+
 func applyWhereQueryBuilder(filters []query.Filter, firstLevel bool, valuesQuery *[]interface{}) (string, []interface{}) {
 	var queryBuilder string = ""
 
@@ -39,6 +42,8 @@ func applyWhereQueryBuilder(filters []query.Filter, firstLevel bool, valuesQuery
 			// Alias
 			if utilsstring.IsNotEmpty(filter.Alias) {
 				queryBuilder = queryBuilder + " " + filter.Alias + "."
+			} else {
+				queryBuilder = queryBuilder + " " + DefaultAliasQuery + "."
 			}
 
 			// Field
@@ -146,6 +151,21 @@ func ApplyJoins(db *gorm.DB, joins []query.Join) *gorm.DB {
 
 	if joins != nil && len(joins) > 0 {
 		for _, join := range joins {
+
+			if utilsstring.IsNotEmpty(join.JoinFetchPreload) {
+				switch join.JoinType {
+				case queryconstants.InnerJoinFetch:
+					dbReturn = dbReturn.Preload(join.JoinFetchPreload)
+					break
+				case queryconstants.LeftJoinFetch:
+					dbReturn = dbReturn.Preload(join.JoinFetchPreload)
+					break
+				case queryconstants.RigthJoinFetch:
+					dbReturn = dbReturn.Preload(join.JoinFetchPreload)
+					break
+				}
+			}
+
 			queryBuilder = ""
 			if utilsstring.IsNotEmpty(join.CustomQueryJoin) {
 				queryBuilder = queryBuilder + " " + join.CustomQueryJoin
@@ -155,32 +175,51 @@ func ApplyJoins(db *gorm.DB, joins []query.Join) *gorm.DB {
 				case queryconstants.InnerJoin:
 				case queryconstants.InnerJoinFetch:
 					queryBuilder = queryBuilder + " JOIN " + join.Field
-					if utilsstring.IsNotEmpty(join.Alias) {
-						queryBuilder = queryBuilder + " as " + join.Alias
-					}
 					break
 
 				case queryconstants.LeftJoin:
 				case queryconstants.LeftJoinFetch:
 					queryBuilder = queryBuilder + " LEFT JOIN " + join.Field
-					if utilsstring.IsNotEmpty(join.Alias) {
-						queryBuilder = queryBuilder + " as " + join.Alias
-					}
 					break
 
 				case queryconstants.RigthJoin:
 				case queryconstants.RigthJoinFetch:
 					queryBuilder = queryBuilder + " RIGTH JOIN " + join.Field
-					if utilsstring.IsNotEmpty(join.Alias) {
-						queryBuilder = queryBuilder + " as " + join.Alias
-					}
 					break
 
 				}
 			}
+
+			if utilsstring.IsNotEmpty(join.Alias) {
+				queryBuilder = queryBuilder + " as " + join.Alias
+			} else {
+				queryBuilder = queryBuilder + " as " + join.Field
+			}
+
+			if utilsstring.IsNotEmpty(join.JoinCondiction) {
+				queryBuilder = queryBuilder + "  " + join.JoinCondiction
+			}
+
 			// Apply joins condiction
 			dbReturn = dbReturn.Joins(queryBuilder)
+
 		}
 	}
+	return dbReturn
+}
+
+// ApplySelect for query
+func ApplySelect(db *gorm.DB, fields []query.Field) *gorm.DB {
+	var dbReturn *gorm.DB = db
+	var queryBuilder string = ""
+
+	if fields != nil && len(fields) > 0 {
+
+	} else {
+		queryBuilder = queryBuilder + " " + DefaultAliasQuery + ".* "
+	}
+
+	dbReturn = dbReturn.Select(queryBuilder)
+
 	return dbReturn
 }
