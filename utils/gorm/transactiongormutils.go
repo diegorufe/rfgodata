@@ -214,12 +214,65 @@ func ApplySelect(db *gorm.DB, fields []query.Field) *gorm.DB {
 	var queryBuilder string = ""
 
 	if fields != nil && len(fields) > 0 {
+		for index, field := range fields {
+			if index > 0 {
+				queryBuilder = queryBuilder + " , "
+			} else {
+				queryBuilder = queryBuilder + " "
+			}
+			if utilsstring.IsNotEmpty(field.CustomField) {
+				queryBuilder = queryBuilder + field.CustomField
+			} else if utilsstring.IsNotEmpty(field.AliasTable) {
+				queryBuilder = queryBuilder + field.AliasTable + "."
+			} else {
+				queryBuilder = queryBuilder + DefaultAliasQuery + "."
+			}
 
+			if utilsstring.IsEmpty(field.CustomField) {
+				queryBuilder = queryBuilder + field.Name + " "
+			}
+
+			if utilsstring.IsNotEmpty(field.AliasField) {
+				queryBuilder = queryBuilder + field.AliasField + " "
+			}
+		}
 	} else {
 		queryBuilder = queryBuilder + " " + DefaultAliasQuery + ".* "
 	}
 
 	dbReturn = dbReturn.Select(queryBuilder)
+
+	return dbReturn
+}
+
+// ApplyOrders method for apply orders
+func ApplyOrders(db *gorm.DB, orders []query.Order) *gorm.DB {
+	var dbReturn *gorm.DB = db
+	var queryBuilder string = ""
+
+	if orders != nil && len(orders) > 0 {
+		for _, order := range orders {
+
+			if utilsstring.IsNotEmpty(order.Alias) {
+				queryBuilder = queryBuilder + "  " + order.Alias + "."
+			} else {
+				queryBuilder = queryBuilder + "  " + DefaultAliasQuery + "."
+			}
+
+			queryBuilder = queryBuilder + order.Field
+
+			switch order.OrderType {
+
+			case queryconstants.Asc:
+				queryBuilder = queryBuilder + " ASC "
+				break
+
+			case queryconstants.Desc:
+				queryBuilder = queryBuilder + " DESC "
+				break
+			}
+		}
+	}
 
 	return dbReturn
 }
