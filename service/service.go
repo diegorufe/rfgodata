@@ -34,6 +34,6 @@ func (service *BaseService) List(fields []query.Field, filters []query.Filter, j
 }
 
 // LoadNew : method for load new data
-func (service *BaseService) LoadNew() (interface{}, error) {
+func (service *BaseService) LoadNew(mapParams *map[string]interface{}) (interface{}, error) {
 	return nil, nil
 }

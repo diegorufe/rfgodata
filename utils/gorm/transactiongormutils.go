@@ -126,7 +126,7 @@ func applyWhereQueryBuilder(filters []query.Filter, firstLevel bool, valuesQuery
 
 // ApplyWhere : for apply where query
 func ApplyWhere(db *gorm.DB, filters []query.Filter) *gorm.DB {
-	var dbReturn *gorm.DB
+	var dbReturn *gorm.DB = db
 	var queryBuilder string = ""
 	var valuesQuery []interface{}
 
@@ -136,6 +136,7 @@ func ApplyWhere(db *gorm.DB, filters []query.Filter) *gorm.DB {
 	if utilsstring.IsNotEmpty(queryBuilder) {
 		dbReturn = db.Where(queryBuilder, valuesQuery)
 	}
+
 	return dbReturn
 }
 
