@@ -1,6 +1,9 @@
 package transactions
 
-import "rfgodata/beans/query"
+import (
+	"reflect"
+	"rfgodata/beans/query"
+)
 
 // ITransaction : interface define methods for transactions
 type ITransaction interface {
@@ -15,7 +18,7 @@ type ITransaction interface {
 	Count(tableName string, filters []query.Filter, joins []query.Join, groups []query.Group) (int64, error)
 
 	// List : method for get list of data
-	List(tableName string, instaceModel func(func(containerData interface{}) (interface{}, error)) (interface{}, error), fields []query.Field, filters []query.Filter, joins []query.Join, orders []query.Order, groups []query.Group, limit query.Limit) (interface{}, error)
+	List(tableName string, modelType reflect.Type, fields []query.Field, filters []query.Filter, joins []query.Join, orders []query.Order, groups []query.Group, limit query.Limit) (interface{}, error)
 
 	// RollBack : Method for execute rollback
 	RollBack() error

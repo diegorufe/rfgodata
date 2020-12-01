@@ -11,6 +11,9 @@ import (
 // DefaultAliasQuery indicates default alias for use in querys if not pass alias
 const DefaultAliasQuery string = "defaultAliasQuery"
 
+// FieldSeparator for find sub entities
+const FieldSeparator string = "_FIELD_SEPARATOR_"
+
 func applyWhereQueryBuilder(filters []query.Filter, firstLevel bool, valuesQuery *[]interface{}) (string, []interface{}) {
 	var queryBuilder string = ""
 
@@ -168,6 +171,7 @@ func ApplyJoins(db *gorm.DB, joins []query.Join) *gorm.DB {
 			}
 
 			queryBuilder = ""
+
 			if utilsstring.IsNotEmpty(join.CustomQueryJoin) {
 				queryBuilder = queryBuilder + " " + join.CustomQueryJoin
 			} else {
@@ -211,7 +215,7 @@ func ApplyJoins(db *gorm.DB, joins []query.Join) *gorm.DB {
 
 // ApplySelect for query
 func ApplySelect(db *gorm.DB, fields []query.Field) *gorm.DB {
-	var dbReturn *gorm.DB = db
+	var dbReturn *gorm.DB = db.Debug()
 	var queryBuilder string = ""
 
 	if fields != nil && len(fields) > 0 {

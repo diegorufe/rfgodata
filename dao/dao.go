@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"reflect"
 	"rfgodata/beans/query"
 )
 
@@ -33,4 +34,5 @@ type BaseDao struct {
 	TableName              string
 	InstanceFindModelArray InstanceModelArrayFunc
 	InstanceFindModel      InstanceModelFunc
+	TypeModel              reflect.Type
 }
