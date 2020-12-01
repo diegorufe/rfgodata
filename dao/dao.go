@@ -31,8 +31,6 @@ type IDao interface {
 
 // BaseDao is  base struct for daos
 type BaseDao struct {
-	TableName              string
-	InstanceFindModelArray InstanceModelArrayFunc
-	InstanceFindModel      InstanceModelFunc
-	TypeModel              reflect.Type
+	TableName string
+	TypeModel reflect.Type
 }

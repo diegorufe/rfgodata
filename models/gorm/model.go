@@ -1,12 +1,12 @@
 package modelsgorm
 
-import "time"
+import "database/sql"
 
 // BaseModelGorm for all model
 type BaseModelGorm struct {
-	ID        uint      `gorm:"column:id;primaryKey" json:"id"`
-	CreatedAt time.Time `gorm:"column:createdAt" json:"createdAt"`
-	UpdatedAt time.Time `gorm:"column:updatedAt" json:"updatedAt"`
+	Id        uint         `gorm:"column:id;primaryKey" json:"id"`
+	CreatedAt sql.NullTime `gorm:"column:createdAt" json:"createdAt"`
+	UpdatedAt sql.NullTime `gorm:"column:updatedAt" json:"updatedAt"`
 }
 
 // Tabler Interface indicates table name for table

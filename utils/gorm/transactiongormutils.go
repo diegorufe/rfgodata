@@ -1,9 +1,12 @@
 package gorm
 
 import (
+	"container/list"
+	"reflect"
 	"rfgocore/utils/utilsstring"
 	"rfgodata/beans/query"
 	queryconstants "rfgodata/constants/query"
+	"strings"
 
 	"gorm.io/gorm"
 )
@@ -164,7 +167,7 @@ func ApplyJoins(db *gorm.DB, joins []query.Join) *gorm.DB {
 				case queryconstants.LeftJoinFetch:
 					dbReturn = dbReturn.Preload(join.JoinFetchPreload)
 					break
-				case queryconstants.RigthJoinFetch:
+				case queryconstants.RightJoinFetch:
 					dbReturn = dbReturn.Preload(join.JoinFetchPreload)
 					break
 				}
@@ -187,9 +190,9 @@ func ApplyJoins(db *gorm.DB, joins []query.Join) *gorm.DB {
 					queryBuilder = queryBuilder + " LEFT JOIN " + join.Field
 					break
 
-				case queryconstants.RigthJoin:
-				case queryconstants.RigthJoinFetch:
-					queryBuilder = queryBuilder + " RIGTH JOIN " + join.Field
+				case queryconstants.RightJoin:
+				case queryconstants.RightJoinFetch:
+					queryBuilder = queryBuilder + " RIGHT JOIN " + join.Field
 					break
 
 				}
@@ -215,7 +218,8 @@ func ApplyJoins(db *gorm.DB, joins []query.Join) *gorm.DB {
 
 // ApplySelect for query
 func ApplySelect(db *gorm.DB, fields []query.Field) *gorm.DB {
-	var dbReturn *gorm.DB = db.Debug()
+	//var dbReturn *gorm.DB = db.Debug()
+	var dbReturn *gorm.DB = db
 	var queryBuilder string = ""
 
 	if fields != nil && len(fields) > 0 {
@@ -280,4 +284,78 @@ func ApplyOrders(db *gorm.DB, orders []query.Order) *gorm.DB {
 	}
 
 	return dbReturn
+}
+
+// RawData : method for raw data into array for model type
+func RawData(db *gorm.DB, modelType reflect.Type) ([]interface{}, error) {
+	var arrayData []interface{}
+
+	rows, err := db.Rows()
+
+	if err == nil {
+		colsRows, err := rows.Columns()
+
+		// If has error return this
+		if err != nil {
+			return nil, err
+		}
+
+		var containerList list.List
+		var instanceModel interface{}
+		var fieldColum reflect.Value
+		var instaceModelColumnReflectColumn reflect.Value
+
+		for rows.Next() {
+
+			// Instace ponter of model
+			resultInstanceModel := reflect.New(modelType)
+			instanceModel = resultInstanceModel.Interface()
+
+			// Create a slice of interface{}'s to represent each column,
+			// and a second slice to contain pointers to each item in the columns slice.
+			columnPointers := make([]interface{}, len(colsRows))
+			instaceModelColumnReflect := reflect.ValueOf(instanceModel).Elem()
+
+			for index, columKey := range colsRows {
+
+				instaceModelColumnReflectColumn = instaceModelColumnReflect
+
+				titleKeySplit := strings.Split(columKey, FieldSeparator)
+				lenTitleSPlit := len(titleKeySplit)
+
+				for indexTitleSplit, titleKey := range titleKeySplit {
+					fieldColum = instaceModelColumnReflectColumn.FieldByName(strings.Title(titleKey))
+
+					if indexTitleSplit >= 0 && indexTitleSplit < (lenTitleSPlit-1) && lenTitleSPlit > 0 {
+						instaceModelColumnReflectColumn = instaceModelColumnReflectColumn.FieldByName(strings.Title(titleKey)).Addr().Elem()
+					}
+
+				}
+
+				interfacePointer := fieldColum.Addr().Interface()
+				columnPointers[index] = interfacePointer
+			}
+
+			// Scan the result into the column pointers...
+			// TODO time error solved by NullTime
+			if err = rows.Scan(columnPointers...); err != nil {
+				break
+			}
+
+			containerList.PushBack(instanceModel)
+		}
+
+		// If list contain data create array return
+		if containerList.Len() > 0 {
+			arrayData = make([]interface{}, containerList.Len())
+			var counter uint64 = 0
+			for element := containerList.Front(); element != nil; element = element.Next() {
+				// do something with element.Value
+				arrayData[counter] = element.Value
+				counter = counter + 1
+			}
+		}
+	}
+
+	return arrayData, err
 }

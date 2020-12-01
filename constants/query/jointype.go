@@ -12,7 +12,7 @@ const (
 
 	LeftJoinFetch JoinType = "LEFT JOIN FETCH"
 
-	RigthJoin JoinType = "RIGTH JOIN"
+	RightJoin JoinType = "RIGHT JOIN"
 
-	RigthJoinFetch JoinType = "RIGTH JOIN FETCH"
+	RightJoinFetch JoinType = "RIGHT JOIN FETCH"
 )

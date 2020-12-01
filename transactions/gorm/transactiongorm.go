@@ -1,10 +1,8 @@
 package gorm
 
 import (
-	"container/list"
 	"reflect"
 	"rfgodata/transactions"
-	"strings"
 
 	"gorm.io/gorm"
 
@@ -37,100 +35,7 @@ func (transactionGorm TransactionGorm) List(tableName string, modelType reflect.
 	db = trxGormUtils.ApplyOrders(db, orders)
 	db = trxGormUtils.ApplyLimit(db, limit)
 
-	var arrayData []interface{}
-
-	rows, err := db.Rows()
-
-	if err == nil {
-		colsRows, _ := rows.Columns()
-
-		var containerList list.List
-		var instanceModel interface{}
-
-		for rows.Next() {
-
-			// Instace ponter of model
-			resultInstanceModel := reflect.New(modelType)
-			instanceModel = resultInstanceModel.Interface()
-
-			// Create a slice of interface{}'s to represent each column,
-			// and a second slice to contain pointers to each item in the columns slice.
-			//columns := make([]interface{}, len(colsRows))
-			columnPointers := make([]interface{}, len(colsRows))
-			instaceModelColumnReflect := reflect.ValueOf(instanceModel).Elem()
-
-			for index, columKey := range colsRows {
-
-				titleKey := strings.Title(columKey)
-
-				if titleKey == "Id" {
-					titleKey = "ID"
-				}
-
-				fieldColum := instaceModelColumnReflect.FieldByName(titleKey)
-				interfacePointer := fieldColum.Addr().Interface()
-				columnPointers[index] = interfacePointer
-			}
-
-			// Scan the result into the column pointers...
-			// TODO time error
-			if err = rows.Scan(columnPointers...); err != nil {
-				break
-			}
-
-			for index, columKey := range colsRows {
-
-				titleKey := strings.Title(columKey)
-
-				if titleKey == "Id" {
-					titleKey = "ID"
-					//reflect.ValueOf(instanceModel).Elem().FieldByName(titleKey).SetUint(returnVal.(uint64))
-				}
-
-				valueColumn := columnPointers[index].(*interface{})
-
-				//fmt.Print(typeof(*val))
-
-				returnVal := *valueColumn
-
-				switch returnVal.(type) {
-				case []uint8:
-					returnVal = string((returnVal).([]uint8))
-					break
-				default:
-					break
-				}
-
-				valueReflect := reflect.ValueOf(instanceModel).Elem().FieldByName(titleKey)
-
-				switch returnVal.(type) {
-				case string:
-					valueReflect.SetString(returnVal.(string))
-					break
-				case int:
-				case int16:
-				case int32:
-				case int64:
-					valueReflect.SetInt(returnVal.(int64))
-					break
-
-				case bool:
-					valueReflect.SetBool(returnVal.(bool))
-					break
-				}
-
-			}
-
-			containerList.PushBack(instanceModel)
-		}
-
-		// If list contain data create array return
-		if containerList.Len() > 0 {
-
-		}
-	}
-
-	return arrayData, err
+	return trxGormUtils.RawData(db, modelType)
 }
 
 // RollBack : Method for execute rollback
