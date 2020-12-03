@@ -8,6 +8,15 @@ import (
 // IService : interface for all services
 type IService interface {
 
+	// Edit : method for edit data
+	Edit(data interface{}, mapParams *map[string]interface{}) (interface{}, error)
+
+	// Add : method for save data
+	Add(data interface{}, mapParams *map[string]interface{}) (interface{}, error)
+
+	// Delete : method for delete data
+	Delete(data interface{}, mapParams *map[string]interface{}) error
+
 	// Count : method for count data
 	Count(filters []query.Filter, joins []query.Join, groups []query.Group, mapParams *map[string]interface{}) (int64, error)
 
@@ -21,6 +30,21 @@ type IService interface {
 // BaseService is  base struct for services
 type BaseService struct {
 	Dao dao.IDao
+}
+
+// Add : method for save data
+func (service BaseService) Add(data interface{}, mapParams *map[string]interface{}) (interface{}, error) {
+	return service.Dao.Add(data, mapParams)
+}
+
+// Edit : method for edit data in database
+func (service BaseService) Edit(data interface{}, mapParams *map[string]interface{}) (interface{}, error) {
+	return service.Dao.Edit(data, mapParams)
+}
+
+// Delete : method for delete data
+func (service BaseService) Delete(data interface{}, mapParams *map[string]interface{}) error {
+	return service.Dao.Delete(data, mapParams)
 }
 
 // Count : method for count data

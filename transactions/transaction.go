@@ -14,6 +14,9 @@ type ITransaction interface {
 	// Edit : method for edit data
 	Edit(data interface{}) (interface{}, error)
 
+	// Delete : method for delete data
+	Delete(data interface{}) error
+
 	// Count : method for count data
 	Count(tableName string, filters []query.Filter, joins []query.Join, groups []query.Group) (int64, error)
 

@@ -48,6 +48,24 @@ func (transactionGorm TransactionGorm) Commit() error {
 	return transactionGorm.Transaction.Commit().Error
 }
 
+// Add : method for add data
+func (transactionGorm TransactionGorm) Add(data interface{}) (interface{}, error) {
+	result := transactionGorm.Transaction.Create(&data)
+	return data, result.Error
+}
+
+// Edit : method for edit data
+func (transactionGorm TransactionGorm) Edit(data interface{}) (interface{}, error) {
+	result := transactionGorm.Transaction.Save(&data)
+	return data, result.Error
+}
+
+// Delete : method for delete data
+func (transactionGorm TransactionGorm) Delete(data interface{}) error {
+	result := transactionGorm.Transaction.Delete(&data)
+	return result.Error
+}
+
 // FinishTransaction : Method for finish transaction
 func (transactionGorm TransactionGorm) FinishTransaction(err error) error {
 	var errReturn error

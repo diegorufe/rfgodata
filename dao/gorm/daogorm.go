@@ -58,7 +58,22 @@ func (daoGorm DaoGorm) Edit(data interface{}, mapParams *map[string]interface{})
 
 // Delete : method for delete data
 func (daoGorm DaoGorm) Delete(data interface{}, mapParams *map[string]interface{}) error {
-	return nil
+	var returnError error = nil
+
+	if data != nil {
+		// find transaction
+		transaction, returnError := utils.GetTransactionInParams(mapParams)
+
+		// If has not error edit data
+		if returnError != nil {
+			returnError = (transaction).Delete(data)
+		}
+
+	} else {
+		returnError = gorm.ErrInvalidData
+	}
+
+	return returnError
 }
 
 // Count : method for count data
