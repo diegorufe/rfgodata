@@ -5,12 +5,6 @@ import (
 	"rfgodata/beans/query"
 )
 
-// InstanceModelArrayFunc For genereate instace array model
-type InstanceModelArrayFunc func(executeFunction func(containerData interface{}) (interface{}, error)) (interface{}, error)
-
-// InstanceModelFunc For genereate instace model
-type InstanceModelFunc func(executeFunction func(containerData interface{}) (interface{}, error)) (interface{}, error)
-
 // IDao : Interface define dao data operations
 type IDao interface {
 	// Edit : method for edit data
