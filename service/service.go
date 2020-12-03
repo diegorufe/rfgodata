@@ -2,6 +2,7 @@ package service
 
 import (
 	"rfgodata/beans/query"
+	querycst "rfgodata/constants/query"
 	"rfgodata/dao"
 )
 
@@ -25,6 +26,9 @@ type IService interface {
 
 	// LoadNew : method for load new data
 	LoadNew(mapParams *map[string]interface{}) (interface{}, error)
+
+	// Read: Method for read entity
+	Read(pk interface{}, mapParams *map[string]interface{}) (interface{}, error)
 }
 
 // BaseService is  base struct for services
@@ -55,6 +59,24 @@ func (service BaseService) Count(filters []query.Filter, joins []query.Join, gro
 // List : method for get list of data
 func (service BaseService) List(fields []query.Field, filters []query.Filter, joins []query.Join, orders []query.Order, groups []query.Group, limit query.Limit, mapParams *map[string]interface{}) (interface{}, error) {
 	return service.Dao.List(fields, filters, joins, orders, groups, limit, mapParams)
+}
+
+// Read: Method for read entity
+func (service BaseService) Read(pk interface{}, mapParams *map[string]interface{}) (interface{}, error) {
+	var data interface{}
+	filters := make([]query.Filter, 1)
+	fields := make([]query.Field, 1)
+
+	filters[0] = query.Filter{FilterType: querycst.Equal, FilterOperationType: querycst.And, Field: "id"}
+	fields[0] = query.Field{Name: "*"}
+
+	arrayData, err := service.List(fields, filters, nil, nil, nil, query.Limit{Start: 0, End: 1}, mapParams)
+
+	if err == nil {
+		data = arrayData.([]interface{})[0]
+	}
+
+	return data, err
 }
 
 // LoadNew : method for load new data
