@@ -67,12 +67,12 @@ func (service BaseService) Read(pk interface{}, mapParams *map[string]interface{
 	filters := make([]query.Filter, 1)
 	fields := make([]query.Field, 1)
 
-	filters[0] = query.Filter{FilterType: querycst.Equal, FilterOperationType: querycst.And, Field: "id"}
+	filters[0] = query.Filter{FilterType: querycst.Equal, FilterOperationType: querycst.And, Field: "id", Value: pk}
 	fields[0] = query.Field{Name: "*"}
 
 	arrayData, err := service.List(fields, filters, nil, nil, nil, query.Limit{Start: 0, End: 1}, mapParams)
 
-	if err == nil {
+	if err == nil && arrayData != nil && len((arrayData.([]interface{}))) > 0 {
 		data = arrayData.([]interface{})[0]
 	}
 

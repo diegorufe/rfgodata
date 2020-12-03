@@ -7,7 +7,7 @@ import (
 
 // IDao : Interface define dao data operations
 type IDao interface {
-	Test() string
+
 	// Edit : method for edit data
 	Edit(data interface{}, mapParams *map[string]interface{}) (interface{}, error)
 
