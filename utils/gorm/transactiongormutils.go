@@ -218,7 +218,7 @@ func ApplyJoins(db *gorm.DB, joins []query.Join) *gorm.DB {
 
 // ApplySelect for query
 func ApplySelect(db *gorm.DB, fields []query.Field) *gorm.DB {
-	var dbReturn *gorm.DB = db.Debug()
+	var dbReturn *gorm.DB = db
 	//var dbReturn *gorm.DB = db
 	var queryBuilder string = ""
 
@@ -281,6 +281,8 @@ func ApplyOrders(db *gorm.DB, orders []query.Order) *gorm.DB {
 				break
 			}
 		}
+
+		dbReturn = dbReturn.Order(queryBuilder)
 	}
 
 	return dbReturn

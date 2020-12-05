@@ -20,16 +20,21 @@ type TransactionGorm struct {
 // Count : method for count data
 func (transactionGorm TransactionGorm) Count(tableName string, filters []query.Filter, joins []query.Join, groups []query.Group) (int64, error) {
 	var returnCount int64 = 0
-	db := trxGormUtils.ApplyWhere(transactionGorm.Transaction.Table(tableName), filters)
+	db := transactionGorm.Transaction.Table(tableName + " " + trxGormUtils.DefaultAliasQuery)
+	db = db.Debug()
+	db = db.Statement.Select(" count(1) ")
+	db = trxGormUtils.ApplyWhere(db, filters)
 	db = trxGormUtils.ApplyJoins(db, joins)
-	res := db.Count(&returnCount)
+	res := db.Statement.Row().Scan(&returnCount)
 
-	return returnCount, res.Error
+	return returnCount, res
 }
 
 // List : method for get list of data
 func (transactionGorm TransactionGorm) List(tableName string, modelType reflect.Type, fields []query.Field, filters []query.Filter, joins []query.Join, orders []query.Order, groups []query.Group, limit query.Limit) (interface{}, error) {
-	db := trxGormUtils.ApplySelect(transactionGorm.Transaction.Table(tableName+" "+trxGormUtils.DefaultAliasQuery), fields)
+	db := transactionGorm.Transaction.Table(tableName + " " + trxGormUtils.DefaultAliasQuery)
+	db = db.Debug()
+	db = trxGormUtils.ApplySelect(db, fields)
 	db = trxGormUtils.ApplyWhere(db, filters)
 	db = trxGormUtils.ApplyJoins(db, joins)
 	db = trxGormUtils.ApplyOrders(db, orders)
