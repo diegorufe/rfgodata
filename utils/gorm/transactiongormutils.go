@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"rfgocore/utils/utilsstring"
 	"rfgodata/beans/query"
+	"rfgodata/constants"
 	queryconstants "rfgodata/constants/query"
 	"strings"
 
@@ -14,16 +15,27 @@ import (
 // DefaultAliasQuery indicates default alias for use in querys if not pass alias
 const DefaultAliasQuery string = "defaultAliasQuery"
 
-// FieldSeparator for find sub entities
-const FieldSeparator string = "_FIELD_SEPARATOR_"
-
 func applyWhereQueryBuilder(filters []query.Filter, firstLevel bool, valuesQuery *[]interface{}) (string, []interface{}) {
 	var queryBuilder string = ""
+	var indexQueryFilter int64 = 0
 
 	if filters != nil && len(filters) > 0 {
-		for index, filter := range filters {
+		for _, filter := range filters {
+
+			if filter.Value == nil {
+				continue
+			}
+
+			switch filter.Value.(type) {
+			case string:
+				if (filter.Value.(string)) == "" {
+					continue
+				}
+			}
+
 			queryBuilder = queryBuilder + " "
-			if !(firstLevel && index == 0) {
+			// TODO
+			if indexQueryFilter > 0 {
 				// And / or operation type
 				switch filter.FilterOperationType {
 
@@ -34,9 +46,15 @@ func applyWhereQueryBuilder(filters []query.Filter, firstLevel bool, valuesQuery
 				case queryconstants.Or:
 					queryBuilder = queryBuilder + " OR "
 					break
+
+				default:
+					queryBuilder = queryBuilder + " AND "
+					break
 				}
 
 			}
+
+			indexQueryFilter = 1
 
 			// open brackets
 			if filter.OpenBrackets > 0 {
@@ -60,7 +78,7 @@ func applyWhereQueryBuilder(filters []query.Filter, firstLevel bool, valuesQuery
 			// Filter type operation
 			switch filter.FilterType {
 
-			case queryconstants.Equal:
+			case queryconstants.LiteralEqual, queryconstants.Equal:
 				queryBuilder = queryBuilder + " = ? "
 				*valuesQuery = append(*valuesQuery, filter.Value)
 				break
@@ -127,6 +145,8 @@ func applyWhereQueryBuilder(filters []query.Filter, firstLevel bool, valuesQuery
 
 	}
 
+	//fmt.Println(queryBuilder)
+
 	return queryBuilder, *valuesQuery
 }
 
@@ -140,7 +160,7 @@ func ApplyWhere(db *gorm.DB, filters []query.Filter) *gorm.DB {
 
 	// If have query call where
 	if utilsstring.IsNotEmpty(queryBuilder) {
-		dbReturn = db.Where(queryBuilder, valuesQuery)
+		dbReturn = db.Where(queryBuilder, valuesQuery...)
 	}
 
 	return dbReturn
@@ -159,19 +179,20 @@ func ApplyJoins(db *gorm.DB, joins []query.Join) *gorm.DB {
 	if joins != nil && len(joins) > 0 {
 		for _, join := range joins {
 
-			if utilsstring.IsNotEmpty(join.JoinFetchPreload) {
-				switch join.JoinType {
-				case queryconstants.InnerJoinFetch:
-					dbReturn = dbReturn.Preload(join.JoinFetchPreload)
-					break
-				case queryconstants.LeftJoinFetch:
-					dbReturn = dbReturn.Preload(join.JoinFetchPreload)
-					break
-				case queryconstants.RightJoinFetch:
-					dbReturn = dbReturn.Preload(join.JoinFetchPreload)
-					break
-				}
-			}
+			// TODO not work really
+			// if utilsstring.IsNotEmpty(join.JoinFetchPreload) {
+			// 	switch join.JoinType {
+			// 	case queryconstants.InnerJoinFetch:
+			// 		dbReturn = dbReturn.Preload(join.JoinFetchPreload)
+			// 		break
+			// 	case queryconstants.LeftJoinFetch:
+			// 		dbReturn = dbReturn.Preload(join.JoinFetchPreload)
+			// 		break
+			// 	case queryconstants.RightJoinFetch:
+			// 		dbReturn = dbReturn.Preload(join.JoinFetchPreload)
+			// 		break
+			// 	}
+			// }
 
 			queryBuilder = ""
 
@@ -180,18 +201,15 @@ func ApplyJoins(db *gorm.DB, joins []query.Join) *gorm.DB {
 			} else {
 				switch join.JoinType {
 
-				case queryconstants.InnerJoin:
-				case queryconstants.InnerJoinFetch:
+				case queryconstants.InnerJoinFetch, queryconstants.InnerJoin:
 					queryBuilder = queryBuilder + " JOIN " + join.Field
 					break
 
-				case queryconstants.LeftJoin:
-				case queryconstants.LeftJoinFetch:
+				case queryconstants.LeftJoinFetch, queryconstants.LeftJoin:
 					queryBuilder = queryBuilder + " LEFT JOIN " + join.Field
 					break
 
-				case queryconstants.RightJoin:
-				case queryconstants.RightJoinFetch:
+				case queryconstants.RightJoinFetch, queryconstants.RightJoin:
 					queryBuilder = queryBuilder + " RIGHT JOIN " + join.Field
 					break
 
@@ -322,7 +340,7 @@ func RawData(db *gorm.DB, modelType reflect.Type) ([]interface{}, error) {
 
 				instaceModelColumnReflectColumn = instaceModelColumnReflect
 
-				titleKeySplit := strings.Split(columKey, FieldSeparator)
+				titleKeySplit := strings.Split(columKey, constants.FieldSeparator)
 				lenTitleSPlit := len(titleKeySplit)
 
 				for indexTitleSplit, titleKey := range titleKeySplit {

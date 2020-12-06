@@ -2,8 +2,8 @@ package service
 
 import (
 	"rfgodata/beans/query"
-	querycst "rfgodata/constants/query"
 	"rfgodata/dao"
+	"rfgodata/utils"
 )
 
 // IService : interface for all services
@@ -67,8 +67,8 @@ func (service BaseService) Read(pk interface{}, mapParams *map[string]interface{
 	filters := make([]query.Filter, 1)
 	fields := make([]query.Field, 1)
 
-	filters[0] = query.Filter{FilterType: querycst.Equal, FilterOperationType: querycst.And, Field: "id", Value: pk}
-	fields[0] = query.Field{Name: "*"}
+	filters[0] = utils.GetFilterSelectPk(pk)
+	fields[0] = utils.GetFieldSelectAll()
 
 	arrayData, err := service.List(fields, filters, nil, nil, nil, query.Limit{Start: 0, End: 1}, mapParams)
 

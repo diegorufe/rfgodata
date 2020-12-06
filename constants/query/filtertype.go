@@ -6,6 +6,8 @@ type FilterType string
 const (
 	Equal FilterType = "="
 
+	LiteralEqual FilterType = "EQUAL"
+
 	Ge FilterType = ">"
 
 	Gt FilterType = ">="
