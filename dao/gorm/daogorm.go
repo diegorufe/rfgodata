@@ -38,22 +38,24 @@ func (daoGorm DaoGorm) Add(data interface{}, mapParams *map[string]interface{}) 
 // Edit : method for edit data in database
 func (daoGorm DaoGorm) Edit(data interface{}, mapParams *map[string]interface{}) (interface{}, error) {
 	var returnData interface{} = nil
-	var returnError error = nil
+	var returnErrorEdit error = nil
 
 	if data != nil {
 		// find transaction
 		transaction, returnError := utils.GetTransactionInParams(mapParams)
 
 		// If has not error edit data
-		if returnError != nil {
-			returnData, returnError = (transaction).Edit(data)
+		if returnError == nil {
+			returnData, returnErrorEdit = (transaction).Edit(data)
+		} else {
+			returnErrorEdit = returnError
 		}
 
 	} else {
-		returnError = gorm.ErrInvalidData
+		returnErrorEdit = gorm.ErrInvalidData
 	}
 
-	return returnData, returnError
+	return returnData, returnErrorEdit
 }
 
 // Delete : method for delete data

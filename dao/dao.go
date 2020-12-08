@@ -22,6 +22,9 @@ type IDao interface {
 
 	// List : method for get list of data
 	List(fields []query.Field, filters []query.Filter, joins []query.Join, orders []query.Order, groups []query.Group, limit query.Limit, mapParams *map[string]interface{}) (interface{}, error)
+
+	// GetTypeModel : method for get type model for dao
+	GetTypeModel() reflect.Type
 }
 
 // BaseDao is  base struct for daos
@@ -53,4 +56,9 @@ func (dao BaseDao) Edit(data interface{}, mapParams *map[string]interface{}) (in
 // Add : method for save data
 func (dao BaseDao) Add(data interface{}, mapParams *map[string]interface{}) (interface{}, error) {
 	return nil, nil
+}
+
+// GetTypeModel : method for get type model for dao
+func (dao BaseDao) GetTypeModel() reflect.Type {
+	return dao.TypeModel
 }

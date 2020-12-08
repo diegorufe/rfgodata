@@ -2,6 +2,7 @@ package service
 
 import (
 	"math"
+	"reflect"
 	"rfgodata/beans/core"
 	databcore "rfgodata/beans/core"
 	"rfgodata/beans/query"
@@ -35,6 +36,9 @@ type IService interface {
 
 	// Read: Method for read entity
 	Read(pk interface{}, mapParams *map[string]interface{}) core.ResponseService
+
+	// GetTypeModel: Method for get type molde
+	GetTypeModel() reflect.Type
 }
 
 // BaseService is  base struct for services
@@ -156,4 +160,9 @@ func (service BaseService) CalculateLimitBrowser(totalRecors int, first int, rec
 	}
 
 	return query.Limit{Start: ((int(page) - 1) * recordsPage), End: recordsPage}
+}
+
+// GetTypeModel : Method for get type molde
+func (service BaseService) GetTypeModel() reflect.Type {
+	return service.Dao.GetTypeModel()
 }

@@ -61,7 +61,7 @@ func (transactionGorm TransactionGorm) Add(data interface{}) (interface{}, error
 
 // Edit : method for edit data
 func (transactionGorm TransactionGorm) Edit(data interface{}) (interface{}, error) {
-	result := transactionGorm.Transaction.Save(&data)
+	result := transactionGorm.Transaction.Save(data)
 	return data, result.Error
 }
 
