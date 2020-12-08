@@ -2,8 +2,8 @@ package core
 
 import "rfgodata/beans/query"
 
-// RequestBrowse : class store config for request browser
-type RequestBrowse struct {
+// RequestBrowser : class store config for request browser
+type RequestBrowser struct {
 	Limit   query.Limit    `json:"limit"`
 	Fields  []query.Field  `json:"fields"`
 	Joins   []query.Join   `json:"joins"`

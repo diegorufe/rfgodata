@@ -26,7 +26,7 @@ type IService interface {
 	List(fields []query.Field, filters []query.Filter, joins []query.Join, orders []query.Order, groups []query.Group, limit query.Limit, mapParams *map[string]interface{}) core.ResponseService
 
 	// Browse : method for get count and list  data
-	Browse(requestBrowse core.RequestBrowse, mapParams *map[string]interface{}) core.ResponseService
+	Browse(requestBrowse core.RequestBrowser, mapParams *map[string]interface{}) core.ResponseService
 
 	// LoadNew : method for load new data
 	LoadNew(mapParams *map[string]interface{}) core.ResponseService
@@ -85,7 +85,7 @@ func (service BaseService) List(fields []query.Field, filters []query.Filter, jo
 }
 
 // Browse : method for get count and list  data
-func (service BaseService) Browse(requestBrowse core.RequestBrowse, mapParams *map[string]interface{}) core.ResponseService {
+func (service BaseService) Browse(requestBrowse core.RequestBrowser, mapParams *map[string]interface{}) core.ResponseService {
 	var responseService core.ResponseService = core.ResponseService{}
 
 	// Firt step count data
