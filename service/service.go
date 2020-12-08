@@ -101,7 +101,7 @@ func (service BaseService) Browser(requestBrowse core.RequestBrowser, mapParams 
 		responseBrowser.Count = dataResponseDao
 
 		// Second step list data
-		dataResponseDao, err := service.Dao.List(requestBrowse.Fields, requestBrowse.Filters, requestBrowse.Joins, requestBrowse.Orders, nil, service.CalculateLimitBrowser(responseService.Data.(int), requestBrowse.First, requestBrowse.RecordsPage), mapParams)
+		dataResponseDao, err := service.Dao.List(requestBrowse.Fields, requestBrowse.Filters, requestBrowse.Joins, requestBrowse.Orders, nil, service.CalculateLimitBrowser(int(responseBrowser.Count), requestBrowse.First, requestBrowse.RecordsPage), mapParams)
 
 		responseBrowser.Data = dataResponseDao
 		responseService.Data = responseBrowser
