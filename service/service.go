@@ -1,6 +1,7 @@
 package service
 
 import (
+	"math"
 	"rfgodata/beans/core"
 	"rfgodata/beans/query"
 	"rfgodata/dao"
@@ -95,7 +96,7 @@ func (service BaseService) Browser(requestBrowse core.RequestBrowser, mapParams 
 
 	if err == nil && dataResponseDao > 0 {
 		// Second step list data
-		dataResponseDao, err := service.Dao.List(requestBrowse.Fields, requestBrowse.Filters, requestBrowse.Joins, requestBrowse.Orders, nil, requestBrowse.Limit, mapParams)
+		dataResponseDao, err := service.Dao.List(requestBrowse.Fields, requestBrowse.Filters, requestBrowse.Joins, requestBrowse.Orders, nil, service.CalculateLimitBrowser(responseService.Data.(int), requestBrowse.First, requestBrowse.RecordsPage), mapParams)
 
 		responseService.Data = dataResponseDao
 		responseService.ResponseError = err
@@ -129,4 +130,24 @@ func (service BaseService) Read(pk interface{}, mapParams *map[string]interface{
 // LoadNew : method for load new data
 func (service BaseService) LoadNew(mapParams *map[string]interface{}) core.ResponseService {
 	return core.ResponseService{}
+}
+
+// CalculateLimitBrowser : method for calculate limit browser
+func (service BaseService) CalculateLimitBrowser(totalRecors int, first int, recordsPage int) query.Limit {
+	var numberOfPages float64 = math.Ceil(float64(totalRecors) / float64(recordsPage))
+	var page float64 = 0
+
+	if first > -1 {
+		page = math.Ceil(float64(first) / float64(recordsPage))
+	}
+
+	if page > numberOfPages {
+		page = 1
+	}
+
+	if page < 1 {
+		page = 1
+	}
+
+	return query.Limit{Start: ((int(page) - 1) * recordsPage), End: recordsPage}
 }
