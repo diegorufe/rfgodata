@@ -3,6 +3,7 @@ package service
 import (
 	"math"
 	"rfgodata/beans/core"
+	databcore "rfgodata/beans/core"
 	"rfgodata/beans/query"
 	"rfgodata/dao"
 	"rfgodata/utils"
@@ -88,6 +89,7 @@ func (service BaseService) List(fields []query.Field, filters []query.Filter, jo
 // Browser : method for get count and list  data
 func (service BaseService) Browser(requestBrowse core.RequestBrowser, mapParams *map[string]interface{}) core.ResponseService {
 	var responseService core.ResponseService = core.ResponseService{}
+	var responseBrowser databcore.ResponseBrowser = databcore.ResponseBrowser{}
 
 	// Firt step count data
 	dataResponseDao, err := service.Dao.Count(requestBrowse.Filters, requestBrowse.Joins, nil, mapParams)
@@ -95,10 +97,14 @@ func (service BaseService) Browser(requestBrowse core.RequestBrowser, mapParams 
 	responseService.ResponseError = err
 
 	if err == nil && dataResponseDao > 0 {
+
+		responseBrowser.Count = dataResponseDao
+
 		// Second step list data
 		dataResponseDao, err := service.Dao.List(requestBrowse.Fields, requestBrowse.Filters, requestBrowse.Joins, requestBrowse.Orders, nil, service.CalculateLimitBrowser(responseService.Data.(int), requestBrowse.First, requestBrowse.RecordsPage), mapParams)
 
-		responseService.Data = dataResponseDao
+		responseBrowser.Data = dataResponseDao
+		responseService.Data = responseBrowser
 		responseService.ResponseError = err
 	}
 
