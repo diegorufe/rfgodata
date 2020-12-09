@@ -21,6 +21,10 @@ func (daoGorm DaoGorm) Add(data interface{}, mapParams *map[string]interface{}) 
 	var returnError error = nil
 
 	if data != nil {
+		// Added updatedat and createdat
+		utils.AddCreatedAt(data)
+		utils.AddUpdatedAt(data)
+
 		// find transaction
 		transaction, returnError := utils.GetTransactionInParams(mapParams)
 
@@ -41,6 +45,10 @@ func (daoGorm DaoGorm) Edit(data interface{}, mapParams *map[string]interface{})
 	var returnErrorEdit error = nil
 
 	if data != nil {
+
+		// Added updated at
+		utils.AddUpdatedAt(data)
+
 		// find transaction
 		transaction, returnError := utils.GetTransactionInParams(mapParams)
 

@@ -55,7 +55,7 @@ func (transactionGorm TransactionGorm) Commit() error {
 
 // Add : method for add data
 func (transactionGorm TransactionGorm) Add(data interface{}) (interface{}, error) {
-	result := transactionGorm.Transaction.Create(&data)
+	result := transactionGorm.Transaction.Create(data)
 	return data, result.Error
 }
 
@@ -67,7 +67,7 @@ func (transactionGorm TransactionGorm) Edit(data interface{}) (interface{}, erro
 
 // Delete : method for delete data
 func (transactionGorm TransactionGorm) Delete(data interface{}) error {
-	result := transactionGorm.Transaction.Delete(&data)
+	result := transactionGorm.Transaction.Delete(data)
 	return result.Error
 }
 

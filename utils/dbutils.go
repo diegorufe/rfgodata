@@ -1,8 +1,10 @@
 package utils
 
 import (
+	"reflect"
 	"rfgodata/beans/query"
 	querycst "rfgodata/constants/query"
+	"time"
 )
 
 // GetFilterSelectPk : method for get field select with pk from table.
@@ -13,4 +15,34 @@ func GetFilterSelectPk(pk interface{}) query.Filter {
 // GetFieldSelectAll : method for get field select all values. DONT include joins asociations
 func GetFieldSelectAll() query.Field {
 	return query.Field{Name: "*"}
+}
+
+// AddCreatedAt Function for added created at if exist field
+func AddCreatedAt(data interface{}) {
+	if data != nil {
+		instanceData := reflect.ValueOf(data).Elem()
+
+		// find created at
+		valueField := instanceData.FieldByName("CreatedAt")
+
+		if valueField.IsValid() && valueField.CanSet() {
+			vallueToSet := reflect.ValueOf(time.Now())
+			valueField.Set(vallueToSet)
+		}
+	}
+}
+
+// AddUpdatedAt Function for added updated at at if exist field
+func AddUpdatedAt(data interface{}) {
+	if data != nil {
+		instanceData := reflect.ValueOf(data).Elem()
+
+		// find created at
+		valueField := instanceData.FieldByName("UpdatedAt")
+
+		if valueField.IsValid() && valueField.CanSet() {
+			vallueToSet := reflect.ValueOf(time.Now())
+			valueField.Set(vallueToSet)
+		}
+	}
 }
