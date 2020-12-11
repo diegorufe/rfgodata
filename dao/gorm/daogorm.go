@@ -28,7 +28,7 @@ func (daoGorm DaoGorm) Add(data interface{}, mapParams *map[string]interface{}) 
 		// find transaction
 		transaction, returnError := utils.GetTransactionInParams(mapParams)
 
-		if returnError != nil {
+		if returnError == nil {
 			returnData, returnError = (transaction).Add(data)
 		}
 
@@ -75,7 +75,7 @@ func (daoGorm DaoGorm) Delete(data interface{}, mapParams *map[string]interface{
 		transaction, returnError := utils.GetTransactionInParams(mapParams)
 
 		// If has not error edit data
-		if returnError != nil {
+		if returnError == nil {
 			returnError = (transaction).Delete(data)
 		}
 

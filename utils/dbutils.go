@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"database/sql"
 	"reflect"
 	"rfgodata/beans/query"
 	querycst "rfgodata/constants/query"
@@ -26,7 +27,8 @@ func AddCreatedAt(data interface{}) {
 		valueField := instanceData.FieldByName("CreatedAt")
 
 		if valueField.IsValid() && valueField.CanSet() {
-			vallueToSet := reflect.ValueOf(time.Now())
+			timeToSet := sql.NullTime{Time: time.Now(), Valid: true}
+			vallueToSet := reflect.ValueOf(timeToSet)
 			valueField.Set(vallueToSet)
 		}
 	}
@@ -41,7 +43,8 @@ func AddUpdatedAt(data interface{}) {
 		valueField := instanceData.FieldByName("UpdatedAt")
 
 		if valueField.IsValid() && valueField.CanSet() {
-			vallueToSet := reflect.ValueOf(time.Now())
+			timeToSet := sql.NullTime{Time: time.Now(), Valid: true}
+			vallueToSet := reflect.ValueOf(timeToSet)
 			valueField.Set(vallueToSet)
 		}
 	}
