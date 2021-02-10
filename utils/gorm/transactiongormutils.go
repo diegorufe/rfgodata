@@ -202,7 +202,7 @@ func ApplyJoins(db *gorm.DB, joins []query.Join) *gorm.DB {
 				switch join.JoinType {
 
 				case queryconstants.InnerJoinFetch, queryconstants.InnerJoin:
-					queryBuilder = queryBuilder + " JOIN " + join.Field
+					queryBuilder = queryBuilder + " INNER JOIN " + join.Field
 					break
 
 				case queryconstants.LeftJoinFetch, queryconstants.LeftJoin:
