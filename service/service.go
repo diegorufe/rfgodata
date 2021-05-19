@@ -39,6 +39,9 @@ type IService interface {
 
 	// GetTypeModel: Method for get type molde
 	GetTypeModel() reflect.Type
+
+	// FindByPk : method for find entity by pk
+	FindByPk(pk interface{}, fields []query.Field, joins []query.Join, mapParams *map[string]interface{}) core.ResponseService
 }
 
 // BaseService is  base struct for services
@@ -160,6 +163,29 @@ func (service BaseService) CalculateLimitBrowser(totalRecors int, first int, rec
 	}
 
 	return query.Limit{Start: ((int(page) - 1) * recordsPage), End: recordsPage}
+}
+
+// FindByPk : method for find entity by pk
+func (service BaseService) FindByPk(pk interface{}, fields []query.Field, joins []query.Join, mapParams *map[string]interface{}) core.ResponseService {
+	var data interface{}
+
+	if len(fields) == 0 {
+		fields := make([]query.Field, 1)
+		// all fields serie
+		fields[0] = utils.GetFieldSelectAll()
+	}
+
+	filters := make([]query.Filter, 1)
+
+	filters[0] = utils.GetFilterSelectPk(pk)
+
+	responseService := service.List(fields, filters, joins, nil, nil, query.Limit{Start: 0, End: 1}, mapParams)
+
+	if responseService.ResponseError == nil && responseService.Data != nil && len((responseService.Data.([]interface{}))) > 0 {
+		data = responseService.Data.([]interface{})[0]
+	}
+
+	return databcore.ResponseService{Data: data, ResponseError: responseService.ResponseError}
 }
 
 // GetTypeModel : Method for get type molde
