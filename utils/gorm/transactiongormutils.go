@@ -352,8 +352,11 @@ func RawData(db *gorm.DB, modelType reflect.Type) ([]interface{}, error) {
 
 				}
 
-				interfacePointer := fieldColum.Addr().Interface()
-				columnPointers[index] = interfacePointer
+				if fieldColum.IsValid() {
+					interfacePointer := fieldColum.Addr().Interface()
+					columnPointers[index] = interfacePointer
+				}
+
 			}
 
 			// Scan the result into the column pointers...
