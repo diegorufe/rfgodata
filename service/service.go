@@ -128,7 +128,7 @@ func (service BaseService) Read(pk interface{}, mapParams *map[string]interface{
 	filters[0] = utils.GetFilterSelectPk(pk)
 	fields[0] = utils.GetFieldSelectAll()
 
-	responseServiceList := service.List(fields, filters, nil, nil, nil, query.Limit{Start: 0, End: 1}, mapParams)
+	responseServiceList := service.FindByPk(pk, fields, nil, mapParams)
 
 	if responseServiceList.ResponseError == nil && responseServiceList.Data != nil {
 		data = responseServiceList.Data
