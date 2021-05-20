@@ -7,6 +7,7 @@ import (
 	"rfgodata/beans/query"
 	"rfgodata/constants"
 	queryconstants "rfgodata/constants/query"
+	utilsTransaction "rfgodata/utils"
 	"strings"
 
 	"gorm.io/gorm"
@@ -381,4 +382,12 @@ func RawData(db *gorm.DB, modelType reflect.Type) ([]interface{}, error) {
 	}
 
 	return arrayData, err
+}
+
+// GetDebugTransactionIfNeeded : method to get debug transaction form if needed if set transaction set debug enabled
+func GetDebugTransactionIfNeeded(db *gorm.DB) *gorm.DB {
+	if utilsTransaction.IsDebug() {
+		db = db.Debug()
+	}
+	return db
 }

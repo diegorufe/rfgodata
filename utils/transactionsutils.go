@@ -7,6 +7,18 @@ import (
 	"rfgodata/transactions"
 )
 
+var debug bool = false
+
+// SetDebug : Method for set debug queries transaction
+func SetDebug(isDebug bool) {
+	debug = isDebug
+}
+
+// Method to check is debug queries transaction
+func IsDebug() bool {
+	return debug
+}
+
 // GetTransactionInParams : method for get transaction in params
 func GetTransactionInParams(mapParams *map[string]interface{}) (transactions.ITransaction, error) {
 	var returnTransaction transactions.ITransaction = nil

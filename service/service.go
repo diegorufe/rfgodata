@@ -155,14 +155,14 @@ func (service BaseService) CalculateLimitBrowser(totalRecors int, first int, rec
 	}
 
 	if page > numberOfPages {
-		page = 1
+		page = 0
 	}
 
-	if page < 1 {
-		page = 1
+	if page < 0 {
+		page = 0
 	}
 
-	return query.Limit{Start: ((int(page) - 1) * recordsPage), End: recordsPage}
+	return query.Limit{Start: ((int(page)) * recordsPage), End: recordsPage}
 }
 
 // FindByPk : method for find entity by pk
