@@ -130,8 +130,8 @@ func (service BaseService) Read(pk interface{}, mapParams *map[string]interface{
 
 	responseServiceList := service.List(fields, filters, nil, nil, nil, query.Limit{Start: 0, End: 1}, mapParams)
 
-	if responseServiceList.ResponseError == nil && responseServiceList.Data != nil && len((responseServiceList.Data.([]interface{}))) > 0 {
-		data = responseServiceList.Data.([]interface{})[0]
+	if responseServiceList.ResponseError == nil && responseServiceList.Data != nil {
+		data = responseServiceList.Data
 	}
 
 	responseService.Data = data
