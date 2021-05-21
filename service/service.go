@@ -150,19 +150,19 @@ func (service BaseService) CalculateLimitBrowser(totalRecors int, first int, rec
 	var numberOfPages float64 = math.Ceil(float64(totalRecors) / float64(recordsPage))
 	var page float64 = 0
 
-	if first > -1 {
-		page = math.Ceil(float64(first) / float64(recordsPage))
+	if first >= 0 {
+		page = float64(int((float64(first)/float64(recordsPage) + 1)))
 	}
 
 	if page > numberOfPages {
-		page = 0
+		page = 1
 	}
 
-	if page < 0 {
-		page = 0
+	if page < 1 {
+		page = 1
 	}
 
-	return query.Limit{Start: ((int(page)) * recordsPage), End: recordsPage}
+	return query.Limit{Start: ((int(page - 1)) * recordsPage), End: recordsPage}
 }
 
 // FindByPk : method for find entity by pk
